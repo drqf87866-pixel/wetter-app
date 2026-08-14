@@ -1,0 +1,405 @@
+:root {
+  --bg: #f4f6f8;
+  --card-bg: #ffffff;
+  --text-primary: #1a1d23;
+  --text-secondary: #6b7280;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --border: #e5e7eb;
+  --danger: #ef4444;
+  --radius: 14px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.app {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 40px 60px;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 20px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Suche */
+.suche-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.such-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.such-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.such-input-wrapper input {
+  width: 100%;
+  padding: 11px 14px 11px 40px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--card-bg);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.such-input-wrapper input:focus {
+  border-color: var(--accent);
+}
+
+.suche-form button[type="submit"] {
+  flex: 0 0 auto;
+  padding: 11px 20px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.suche-form button[type="submit"]:hover {
+  background: var(--accent-hover);
+}
+
+.suchergebnisse {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.suchergebnisse li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.suchergebnisse li:last-child {
+  border-bottom: none;
+}
+
+.fehler {
+  color: var(--danger);
+  font-size: 13px;
+  margin: -4px 0 12px;
+}
+
+/* Icon-Buttons */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.icon-button:hover {
+  background: var(--border);
+  color: var(--text-primary);
+}
+
+/* Hauptbereich */
+.hauptbereich {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .hauptbereich {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.orte-liste,
+.detailansicht {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  min-width: 0;
+}
+
+.orte-liste ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.orte-liste li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.orte-liste li:hover {
+  background: var(--bg);
+}
+
+.orte-liste li.aktiv {
+  background: #eff6ff;
+}
+
+.ort-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.hinweis {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Aktuell-Karte mit dynamischem Wetter-Verlauf */
+.aktuell {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0 0 16px;
+  border-bottom: none;
+  transition: background 0.3s ease;
+  min-width: 0;
+}
+
+.aktuell .temperatur,
+.aktuell .wetterbeschreibung,
+.aktuell .wind {
+  color: #1a1d23;
+}
+
+.verlauf-sonnig {
+  background: linear-gradient(135deg, #fff3c4, #ffd76a);
+}
+
+.verlauf-bewoelkt {
+  background: linear-gradient(135deg, #e6eaf0, #c3cbd6);
+}
+
+.verlauf-neblig {
+  background: linear-gradient(135deg, #eceff1, #cfd8dc);
+}
+
+.verlauf-regnerisch {
+  background: linear-gradient(135deg, #bcd4ec, #7fa8cf);
+}
+
+.verlauf-verschneit {
+  background: linear-gradient(135deg, #f0f4f8, #d6e4f0);
+}
+
+.verlauf-gewitter {
+  background: linear-gradient(135deg, #b0b8c4, #6b7684);
+}
+
+.verlauf-gewitter .temperatur,
+.verlauf-gewitter .wetterbeschreibung,
+.verlauf-gewitter .wind {
+  color: #ffffff;
+}
+
+.temperatur {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1;
+}
+
+.wetterbeschreibung {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.wind {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* 14-Tage-Liste im Querformat, zwei Reihen */
+.tagesliste {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .tagesliste {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .tagesliste {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.tag {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 10px;
+  background: var(--bg);
+  border-radius: 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tag:hover {
+  transform: translateY(-2px);
+}
+
+.tag-aktiv {
+  background: #dbeafe;
+  outline: 2px solid var(--accent);
+}
+
+.tag-innen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 6px;
+}
+
+.tag-datum {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tag-temp {
+  font-weight: 600;
+  margin: 0;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Stunden-Detailpanel */
+.stunden-panel {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  width: 100%;
+  min-width: 0;
+}
+
+.stunden-liste {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding-bottom: 8px;
+  width: 100%;
+}
+
+.stunde {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 8px;
+  background: var(--bg);
+  border-radius: 10px;
+  min-width: 48px;
+  font-size: 11px;
+}
+
+.stunde-zeit {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.stunde-temp {
+  font-weight: 600;
+  margin: 0;
+}
+
+.stunde-regen {
+  color: var(--accent);
+  margin: 0;
+  font-size: 11px;
+}

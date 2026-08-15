@@ -80,7 +80,7 @@ export default function Vorhersage({ ort, daten, laedt }) {
             >
               <p className="tag-datum">{formatiereDatum(tag.datum)}</p>
               <div className="tag-innen">
-                <WeatherIcon code={tag.wettercode} width={20} height={20} />
+                <WeatherIcon code={tag.wettercode} width={30} height={30} />
                 <p className="tag-temp">
                   {Math.round(tag.tempMin)}° / {Math.round(tag.tempMax)}°
                 </p>
@@ -97,7 +97,7 @@ export default function Vorhersage({ ort, daten, laedt }) {
             {stundenFuerAusgewaehltenTag.map((stunde) => (
               <div key={stunde.zeit} className="stunde">
                 <p className="stunde-zeit">{formatiereUhrzeit(stunde.zeit)}</p>
-                <WeatherIcon code={stunde.wettercode} width={20} height={20} />
+                <WeatherIcon code={stunde.wettercode} width={26} height={26} />
                 <p className="stunde-temp">{Math.round(stunde.temperatur)}°</p>
                 <p className="stunde-regen">{stunde.regenwahrscheinlichkeit}%</p>
               </div>

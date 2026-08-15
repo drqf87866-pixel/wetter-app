@@ -26,6 +26,14 @@ export default defineConfig({
         'apple-touch-icon.png',
       ],
       workbox: {
+        // Neue Service-Worker-Version übernimmt sofort die Kontrolle,
+        // statt zu warten bis alle offenen Tabs/App-Instanzen geschlossen
+        // wurden – dadurch kommt ein Versionssprung viel schneller an.
+        skipWaiting: true,
+        clientsClaim: true,
+        // Alte, nicht mehr referenzierte Caches vorheriger Versionen
+        // automatisch aufräumen statt sie unbegrenzt liegen zu lassen.
+        cleanupOutdatedCaches: true,
         // App-Shell (HTML/JS/CSS/Icons) fürs Offline-Caching
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
         runtimeCaching: [

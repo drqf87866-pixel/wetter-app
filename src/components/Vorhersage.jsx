@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WeatherIcon, IconWind } from "./Icons";
+
+const STANDARD_TAGE = 7;
 
 const WETTERCODES = {
   0: "Klarer Himmel", 1: "Überwiegend klar", 2: "Teilweise bewölkt", 3: "Bedeckt",
@@ -36,12 +38,20 @@ function wetterKategorie(code) {
 
 export default function Vorhersage({ ort, daten, laedt }) {
   const [ausgewaehlterTag, setAusgewaehlterTag] = useState(null);
+  const [zeigeAlleTage, setZeigeAlleTage] = useState(false);
+
+  // Bei Ortswechsel wieder auf die Standardansicht zurücksetzen
+  useEffect(() => {
+    setZeigeAlleTage(false);
+    setAusgewaehlterTag(null);
+  }, [ort?.id]);
 
   if (!ort) return <p className="hinweis">Wähle einen Ort aus der Liste.</p>;
   if (laedt) return <p className="hinweis">Lädt...</p>;
   if (!daten) return null;
 
   const kategorie = wetterKategorie(daten.aktuell.wettercode);
+  const sichtbareTage = zeigeAlleTage ? daten.taeglich : daten.taeglich.slice(0, STANDARD_TAGE);
 
   function handleTagKlick(datum) {
     setAusgewaehlterTag(ausgewaehlterTag === datum ? null : datum);
@@ -70,9 +80,9 @@ export default function Vorhersage({ ort, daten, laedt }) {
         </p>
       </div>
 
-      <h3>14-Tage-Vorhersage</h3>
+      <h3>{zeigeAlleTage ? "14-Tage-Vorhersage" : "7-Tage-Vorhersage"}</h3>
       <div className="tagesliste">
-        {daten.taeglich.map((tag) => (
+        {sichtbareTage.map((tag) => (
           <div key={tag.datum}>
             <div
               className={`tag ${ausgewaehlterTag === tag.datum ? "tag-aktiv" : ""}`}
@@ -89,6 +99,14 @@ export default function Vorhersage({ ort, daten, laedt }) {
           </div>
         ))}
       </div>
+
+      <button
+        type="button"
+        className="mehr-tage-button"
+        onClick={() => setZeigeAlleTage(!zeigeAlleTage)}
+      >
+        {zeigeAlleTage ? "Nur 7 Tage anzeigen" : "Alle 14 Tage anzeigen"}
+      </button>
 
       {ausgewaehlterTag && (
         <div className="stunden-panel">

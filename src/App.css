@@ -66,6 +66,11 @@ body::after {
   width: 100%;
   margin: 0 auto;
   padding: 32px 40px 60px;
+  /* Abstand zu Notch/Statusleiste, wenn als installierte App im Vollbild läuft */
+  padding-top: max(32px, env(safe-area-inset-top));
+  padding-left: max(40px, env(safe-area-inset-left));
+  padding-right: max(40px, env(safe-area-inset-right));
+  padding-bottom: max(60px, env(safe-area-inset-bottom));
 }
 
 h1 {
@@ -280,7 +285,8 @@ h3 {
 .aktuell {
   display: flex;
   align-items: center;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 14px 20px;
   border-radius: 20px;
   padding: 20px 22px;
   margin: 0 0 20px;
@@ -389,6 +395,76 @@ h3 {
   }
 }
 
+/* Mobile: weniger Rand, Wind-Chip bricht sauber um, Tage horizontal
+   wischbar statt als lange 7-reihige Wand */
+@media (max-width: 640px) {
+  .app {
+    padding: 20px 16px 40px;
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-bottom: max(40px, env(safe-area-inset-bottom));
+  }
+
+  h1 {
+    font-size: 21px;
+  }
+
+  .orte-liste,
+  .detailansicht {
+    padding: 16px;
+  }
+
+  .aktuell {
+    padding: 16px;
+  }
+
+  .aktuell svg {
+    width: 50px;
+    height: 50px;
+    padding: 12px;
+  }
+
+  .temperatur {
+    font-size: 34px;
+  }
+
+  .wind {
+    margin-left: 0;
+    flex-direction: row;
+    padding: 8px 14px;
+  }
+
+  .tagesliste {
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding-bottom: 8px;
+    scroll-snap-type: x proximity;
+  }
+
+  .tag {
+    flex: 0 0 auto;
+    width: 100px;
+    align-items: center;
+    text-align: center;
+    padding: 14px 10px;
+    scroll-snap-align: start;
+  }
+
+  .tag-innen {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tag-temp {
+    font-size: 14px;
+    white-space: normal;
+  }
+}
+
 .tag {
   display: flex;
   flex-direction: column;
@@ -439,6 +515,24 @@ h3 {
   font-size: 16px;
   white-space: nowrap;
   color: white;
+}
+
+.mehr-tage-button {
+  display: block;
+  margin: 14px auto 0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mehr-tage-button:hover {
+  background: rgba(255, 255, 255, 0.24);
 }
 
 /* Stunden-Detailpanel */
@@ -497,6 +591,8 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
   margin-bottom: 24px;
 }
 
@@ -536,6 +632,10 @@ h3 {
   align-items: center;
   justify-content: center;
   padding: 24px;
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-left: max(24px, env(safe-area-inset-left));
+  padding-right: max(24px, env(safe-area-inset-right));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
 .login-karte {

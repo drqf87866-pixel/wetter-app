@@ -8,39 +8,23 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons.svg'],
-      manifest: {
-        name: 'Wetter-App',
-        short_name: 'Wetter',
-        description: 'Wetter-Vorhersage für gespeicherte Orte',
-        lang: 'de',
-        start_url: '/wetter-app/',
-        scope: '/wetter-app/',
-        display: 'standalone',
-        background_color: '#a86ce8',
-        theme_color: '#ff6f91',
-        icons: [
-          {
-            src: 'icon-192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: 'icon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: 'icon-512-maskable.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
-        ],
-      },
+      // manifest.webmanifest liegt als statische Datei in public/, und die
+      // Service-Worker-Registrierung passiert manuell in main.jsx. Grund:
+      // vite-plugin-pwas eingebauter Weg dafür schreibt noch auf die alte
+      // Rollup-Art ins Bundle, was unter Vite 8s neuem Rolldown-Bundler
+      // bricht (Fehler "assigns to bundle variable" beim Build). Die
+      // Service-Worker-Generierung über workbox unten funktioniert
+      // unabhängig davon weiterhin normal.
+      manifest: false,
+      injectRegister: false,
+      includeAssets: [
+        'favicon.svg',
+        'icons.svg',
+        'icon-192.png',
+        'icon-512.png',
+        'icon-512-maskable.png',
+        'apple-touch-icon.png',
+      ],
       workbox: {
         // App-Shell (HTML/JS/CSS/Icons) fürs Offline-Caching
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],

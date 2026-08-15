@@ -1,0 +1,31 @@
+{
+  "name": "Wetter-App",
+  "short_name": "Wetter",
+  "description": "Wetter-Vorhersage für gespeicherte Orte",
+  "lang": "de",
+  "start_url": "/wetter-app/",
+  "scope": "/wetter-app/",
+  "display": "standalone",
+  "background_color": "#a86ce8",
+  "theme_color": "#ff6f91",
+  "icons": [
+    {
+      "src": "/wetter-app/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/wetter-app/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/wetter-app/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

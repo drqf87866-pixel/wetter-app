@@ -292,8 +292,27 @@ h3 {
   margin: 0 0 20px;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  transition: background 0.3s ease;
+  transition: background 0.2s ease;
   min-width: 0;
+  cursor: pointer;
+}
+
+.aktuell:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.aktuell-aktiv {
+  background: rgba(255, 255, 255, 0.3) !important;
+  outline: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.aktuell-datum {
+  margin: 0 0 2px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .aktuell svg {
@@ -443,6 +462,12 @@ h3 {
     gap: 10px;
     padding-bottom: 8px;
     scroll-snap-type: x proximity;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* alte Edge/IE-Versionen */
+  }
+
+  .tagesliste::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Android-Browser */
   }
 
   .tag {
@@ -550,6 +575,12 @@ h3 {
   gap: 12px;
   padding-bottom: 10px;
   width: 100%;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* alte Edge/IE-Versionen */
+}
+
+.stunden-liste::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Android-Browser */
 }
 
 .stunde {

@@ -51,7 +51,11 @@ export default function Vorhersage({ ort, daten, laedt }) {
   if (!daten) return null;
 
   const kategorie = wetterKategorie(daten.aktuell.wettercode);
-  const sichtbareTage = zeigeAlleTage ? daten.taeglich : daten.taeglich.slice(0, STANDARD_TAGE);
+  const heute = daten.taeglich[0];
+  // Der heutige Tag steckt schon in der großen Aktuell-Kachel, daher in
+  // der Liste ausgeblendet – dort geht's nur noch um die kommenden Tage.
+  const kommendeTage = daten.taeglich.slice(1);
+  const sichtbareTage = zeigeAlleTage ? kommendeTage : kommendeTage.slice(0, STANDARD_TAGE);
 
   function handleTagKlick(datum) {
     setAusgewaehlterTag(ausgewaehlterTag === datum ? null : datum);
@@ -69,9 +73,13 @@ export default function Vorhersage({ ort, daten, laedt }) {
   return (
     <div className="detailansicht">
       <h2>{ort.name}</h2>
-      <div className={`aktuell verlauf-${kategorie}`}>
+      <div
+        className={`aktuell verlauf-${kategorie} ${ausgewaehlterTag === heute.datum ? "aktuell-aktiv" : ""}`}
+        onClick={() => handleTagKlick(heute.datum)}
+      >
         <WeatherIcon code={daten.aktuell.wettercode} />
         <div>
+          <p className="aktuell-datum">Heute, {formatiereDatum(heute.datum)}</p>
           <p className="temperatur">{Math.round(daten.aktuell.temperatur)}°C</p>
           <p className="wetterbeschreibung">{wettertext(daten.aktuell.wettercode)}</p>
         </div>
@@ -110,7 +118,11 @@ export default function Vorhersage({ ort, daten, laedt }) {
 
       {ausgewaehlterTag && (
         <div className="stunden-panel">
-          <h3>Verlauf am {formatiereDatum(ausgewaehlterTag)}</h3>
+          <h3>
+            {ausgewaehlterTag === heute.datum
+              ? "Verlauf heute"
+              : `Verlauf am ${formatiereDatum(ausgewaehlterTag)}`}
+          </h3>
           <div className="stunden-liste">
             {stundenFuerAusgewaehltenTag.map((stunde) => (
               <div key={stunde.zeit} className="stunde">

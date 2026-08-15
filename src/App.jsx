@@ -11,7 +11,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
-import { holeVorhersage } from "./api/openMeteo";
+import { holeVorhersageVonQuelle, STANDARD_QUELLE } from "./api/wetterQuellen";
 import Login from "./components/Login";
 import OrtSuche from "./components/OrtSuche";
 import OrteListe from "./components/OrteListe";
@@ -28,6 +28,10 @@ export default function App() {
   const [vorhersageDaten, setVorhersageDaten] = useState(null);
   const [ladeVorhersage, setLadeVorhersage] = useState(false);
   const [fehler, setFehler] = useState(null);
+  // Gewählter Wetterdaten-Anbieter, gerätespezifisch in localStorage gemerkt
+  const [datenquelle, setDatenquelle] = useState(
+    () => localStorage.getItem("wetterQuelle") ?? STANDARD_QUELLE
+  );
 
   // Auth-Status beobachten
   useEffect(() => {
@@ -93,19 +97,39 @@ export default function App() {
     }
   }
 
-  async function ortAuswaehlen(ort) {
+  function ortAuswaehlen(ort) {
     setAusgewaehlterOrt(ort);
+  }
+
+  function datenquelleWechseln(neueQuelle) {
+    setDatenquelle(neueQuelle);
+    localStorage.setItem("wetterQuelle", neueQuelle);
+  }
+
+  // Vorhersage neu laden, sobald sich der ausgewählte Ort oder die
+  // gewählte Datenquelle ändert
+  useEffect(() => {
+    if (!ausgewaehlterOrt) return;
+
+    let abgebrochen = false;
     setLadeVorhersage(true);
     setFehler(null);
-    try {
-      const daten = await holeVorhersage(ort.latitude, ort.longitude);
-      setVorhersageDaten(daten);
-    } catch (err) {
-      setFehler("Vorhersage konnte nicht geladen werden.");
-    } finally {
-      setLadeVorhersage(false);
-    }
-  }
+
+    holeVorhersageVonQuelle(datenquelle, ausgewaehlterOrt.latitude, ausgewaehlterOrt.longitude)
+      .then((daten) => {
+        if (!abgebrochen) setVorhersageDaten(daten);
+      })
+      .catch(() => {
+        if (!abgebrochen) setFehler("Vorhersage konnte nicht geladen werden.");
+      })
+      .finally(() => {
+        if (!abgebrochen) setLadeVorhersage(false);
+      });
+
+    return () => {
+      abgebrochen = true;
+    };
+  }, [ausgewaehlterOrt, datenquelle]);
 
   function handleAbmelden() {
     signOut(auth);
@@ -143,7 +167,13 @@ export default function App() {
           onOrtAuswaehlen={ortAuswaehlen}
           onOrtEntfernen={ortEntfernen}
         />
-        <Vorhersage ort={ausgewaehlterOrt} daten={vorhersageDaten} laedt={ladeVorhersage} />
+        <Vorhersage
+          ort={ausgewaehlterOrt}
+          daten={vorhersageDaten}
+          laedt={ladeVorhersage}
+          datenquelle={datenquelle}
+          onDatenquelleWechsel={datenquelleWechseln}
+        />
       </div>
     </div>
   );

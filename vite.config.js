@@ -52,6 +52,19 @@ export default defineConfig({
               networkTimeoutSeconds: 8,
             },
           },
+          {
+            // Met.no-Vorhersagedaten genauso wie Open-Meteo cachen
+            urlPattern: ({ url }) => url.hostname === 'api.met.no',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'metno-daten',
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 60 * 60, // 1 Stunde
+              },
+              networkTimeoutSeconds: 8,
+            },
+          },
         ],
       },
     }),

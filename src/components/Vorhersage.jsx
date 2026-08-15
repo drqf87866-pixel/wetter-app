@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { WeatherIcon, IconWind } from "./Icons";
+import { WETTERQUELLEN } from "../api/wetterQuellen";
 
 const STANDARD_TAGE = 7;
 
@@ -36,7 +37,7 @@ function wetterKategorie(code) {
   return "bewoelkt";
 }
 
-export default function Vorhersage({ ort, daten, laedt }) {
+export default function Vorhersage({ ort, daten, laedt, datenquelle, onDatenquelleWechsel }) {
   const [ausgewaehlterTag, setAusgewaehlterTag] = useState(null);
   const [zeigeAlleTage, setZeigeAlleTage] = useState(false);
 
@@ -46,15 +47,54 @@ export default function Vorhersage({ ort, daten, laedt }) {
     setAusgewaehlterTag(null);
   }, [ort?.id]);
 
-  if (!ort) return <p className="hinweis">Wähle einen Ort aus der Liste.</p>;
-  if (laedt) return <p className="hinweis">Lädt...</p>;
-  if (!daten) return null;
+  // Dropdown zur Wahl des Wetterdaten-Anbieters – unabhängig davon, ob
+  // gerade ein Ort ausgewählt ist, damit die Wahl jederzeit sichtbar bleibt.
+  const quelleAuswahl = onDatenquelleWechsel && (
+    <div className="quelle-auswahl">
+      <label htmlFor="quelle-select">Datenquelle</label>
+      <select
+        id="quelle-select"
+        value={datenquelle}
+        onChange={(e) => onDatenquelleWechsel(e.target.value)}
+      >
+        {Object.values(WETTERQUELLEN).map((quelle) => (
+          <option key={quelle.id} value={quelle.id}>
+            {quelle.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
+  if (!ort) {
+    return (
+      <div className="detailansicht">
+        {quelleAuswahl}
+        <p className="hinweis">Wähle einen Ort aus der Liste.</p>
+      </div>
+    );
+  }
+
+  if (laedt) {
+    return (
+      <div className="detailansicht">
+        {quelleAuswahl}
+        <p className="hinweis">Lädt...</p>
+      </div>
+    );
+  }
+
+  if (!daten) return <div className="detailansicht">{quelleAuswahl}</div>;
 
   const kategorie = wetterKategorie(daten.aktuell.wettercode);
   const heute = daten.taeglich[0];
   // Der heutige Tag steckt schon in der großen Aktuell-Kachel, daher in
   // der Liste ausgeblendet – dort geht's nur noch um die kommenden Tage.
   const kommendeTage = daten.taeglich.slice(1);
+  // Anzahl kommender Tage ist abhängig von der Datenquelle (Open-Meteo: 13,
+  // Met.no: deutlich weniger) – daher nirgends mehr hart codiert.
+  const anzahlKommendeTage = kommendeTage.length;
+  const anzahlStandardTage = Math.min(STANDARD_TAGE, anzahlKommendeTage);
   const sichtbareTage = zeigeAlleTage ? kommendeTage : kommendeTage.slice(0, STANDARD_TAGE);
 
   function handleTagKlick(datum) {
@@ -72,6 +112,7 @@ export default function Vorhersage({ ort, daten, laedt }) {
 
   return (
     <div className="detailansicht">
+      {quelleAuswahl}
       <h2>{ort.name}</h2>
       <div
         className={`aktuell verlauf-${kategorie} ${ausgewaehlterTag === heute.datum ? "aktuell-aktiv" : ""}`}
@@ -88,7 +129,7 @@ export default function Vorhersage({ ort, daten, laedt }) {
         </p>
       </div>
 
-      <h3>{zeigeAlleTage ? "14-Tage-Vorhersage" : "7-Tage-Vorhersage"}</h3>
+      <h3>{zeigeAlleTage ? `${anzahlKommendeTage}-Tage-Vorhersage` : `${anzahlStandardTage}-Tage-Vorhersage`}</h3>
       <div className="tagesliste">
         {sichtbareTage.map((tag) => (
           <div key={tag.datum}>
@@ -108,13 +149,15 @@ export default function Vorhersage({ ort, daten, laedt }) {
         ))}
       </div>
 
-      <button
-        type="button"
-        className="mehr-tage-button"
-        onClick={() => setZeigeAlleTage(!zeigeAlleTage)}
-      >
-        {zeigeAlleTage ? "Nur 7 Tage anzeigen" : "Alle 14 Tage anzeigen"}
-      </button>
+      {anzahlKommendeTage > STANDARD_TAGE && (
+        <button
+          type="button"
+          className="mehr-tage-button"
+          onClick={() => setZeigeAlleTage(!zeigeAlleTage)}
+        >
+          {zeigeAlleTage ? `Nur ${anzahlStandardTage} Tage anzeigen` : `Alle ${anzahlKommendeTage} Tage anzeigen`}
+        </button>
+      )}
 
       {ausgewaehlterTag && (
         <div className="stunden-panel">
